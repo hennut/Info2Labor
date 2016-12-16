@@ -1,0 +1,2 @@
+Projektidee:
+	Ein Java-basiertes Stein-Schere-Papier-Spiel, wobei man bei Beginn die Sprache auswählen kann.
