@@ -29,7 +29,6 @@ public class Field : MonoBehaviour {
 	
 	//marks a field targeted by figure
 	void OnTriggerEnter(Collider coll){
-		Debug.Log("On Trigger Enter" + coll.GetComponent<Figure>().num + " " + coll.GetComponent<Figure>().GetColor() + coll.GetComponent<Figure>().dragging);
 		isTargeted = coll.GetComponent<Figure>().dragging;
 	}
 	

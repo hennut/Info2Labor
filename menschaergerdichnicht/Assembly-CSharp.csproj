@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{43A39913-8CA1-7148-460B-DD1F483304BE}</ProjectGuid>
+    <ProjectGuid>{8C74E6F1-C926-32ED-5949-B345C2C1E05A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Computer.cs" />
+     <Compile Include="Assets\Scripts\DebugDice.cs" />
      <Compile Include="Assets\Scripts\Dice.cs" />
      <Compile Include="Assets\Scripts\Field.cs" />
      <Compile Include="Assets\Scripts\Figure.cs" />

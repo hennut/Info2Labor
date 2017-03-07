@@ -8,6 +8,7 @@ public class Figure : MonoBehaviour {
 	float distance;
 	
 	public int pos, num;
+	public bool needToHit;
 	
 	// Update is called once per frame
 	void Update () {
@@ -51,7 +52,7 @@ public class Figure : MonoBehaviour {
 				transform.parent.parent.parent.GetComponent<GameMaster>().GoOn(GetColor());
 			}
 		}else{
-			if(!transform.parent.parent.GetComponent<Player>().FieldIsOccupied(GetTargetCoordinates())){
+			if(!transform.parent.parent.GetComponent<Player>().FieldIsOccupied(GetTargetCoordinates(), num)){
 				pos = GetTargetCoordinates();
 				transform.parent.parent.GetComponent<Player>().EnemyContact(pos);
 			}
@@ -76,7 +77,7 @@ public class Figure : MonoBehaviour {
 	}
 	
 	// checks whether an enemy is able to get hit
-	void IsEnemyHittable(){
+	public void IsEnemyHittable(){
 		if(transform.parent.parent.parent.GetComponent<GameMaster>().IsAbleToHit(pos, GetColor())){
 			SetNeedToHit(true);
 		}

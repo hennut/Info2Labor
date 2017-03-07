@@ -5,8 +5,11 @@ using UnityEngine;
 public class GameMaster : MonoBehaviour {
 
 	public bool debugMode = false;
+	public bool gameHasEnded = false;
 
 	public GameObject[] players = new GameObject[4];
+	public GameObject[] DebugDices = new GameObject[4];
+	public GameObject playerDice;
 	int index = 0;
 	
 	//	start new round
@@ -17,7 +20,7 @@ public class GameMaster : MonoBehaviour {
 	
 	// main loop
 	void MainLoop(){
-		if(!debugMode){
+		if(!debugMode && !gameHasEnded){
 			index ++;
 			if(index >= players.Length || index < 0){
 				index = 0;
@@ -32,11 +35,9 @@ public class GameMaster : MonoBehaviour {
 	public void EndOfDraw(int color){
 		for(int i = 0; i < players.Length; i++){
 			if(players[i].GetComponent<Player>().color == color){
-				if(players[i].GetComponent<Player>().StartIsOccupied()){
-					for(int j = 0; j < players[i].GetComponent<Player>().figures.Length; j++){
-						if(players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().pos == 4 && !players[i].GetComponent<Player>().FieldIsOccupied(players[i].GetComponent<Player>().GetLegalCoordinates(players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().pos) || players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().GetNeedToHit())){
-							players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().pos = GetFreeBaseField(color);
-						}
+				for(int j = 0; j < players[i].GetComponent<Player>().figures.Length; j++){
+					if((players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().pos == 4 && !players[i].GetComponent<Player>().FieldIsOccupied(players[i].GetComponent<Player>().GetLegalCoordinates(players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().pos), players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().num)) || players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().GetNeedToHit()){
+						players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().pos = GetFreeBaseField(color);
 					}
 				}
 			}
@@ -67,7 +68,7 @@ public class GameMaster : MonoBehaviour {
 	}
 	
 	public int GetPlayerByColor(int color){
-		for(int = 0; i < players.Length; i++){
+		for(int i = 0; i < players.Length; i++){
 			if(players[i].GetComponent<Player>().color == color){
 				return i;
 			}
@@ -129,19 +130,37 @@ public class GameMaster : MonoBehaviour {
 		return -1;
 	}
 	
+	void HasFinished(){
+		bool[] hasFinished = new bool[players.Length];
+		for(int i = 0; i < hasFinished.Length; i++){
+			hasFinished[i] = true;
+		}
+		for(int i = 0; i < players.Length; i++){
+			for(int j = 0; j < players[i].GetComponent<Player>().figures.Length; j++){
+				if(players[i].GetComponent<Player>().figures[j].GetComponent<Figure>().pos < 40){
+					hasFinished[i] = false;
+				}
+			}
+		}
+		for(int i = 0; i < hasFinished.Length; i++){
+			if(hasFinished[i]){
+				players[i].GetComponent<Player>().won = true;
+				gameHasEnded = true;
+			}
+		}
+	}
+	
 	// +++++Debugging+++++
 	
 	// Update is called once per frame
 	void Update () {
+		HasFinished();
 		if(Input.GetKeyDown(KeyCode.D)){
 			debugMode = !debugMode;
 		}
-		
-		if(debugMode){
-			players[0].GetComponent<Player>().SetOn();
-			players[1].GetComponent<Player>().SetOff();
-			players[2].GetComponent<Player>().SetOff();
-			players[3].GetComponent<Player>().SetOff();
+		for(int i = 0; i < DebugDices.Length; i++){
+			DebugDices[i].SetActive(debugMode);
 		}
+		playerDice.SetActive(!debugMode);
 	}
 }

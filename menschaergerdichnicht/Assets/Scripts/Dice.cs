@@ -7,16 +7,6 @@ public class Dice : MonoBehaviour {
 	System.Random rnd = new System.Random();
 	
 	public GameObject player;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 	
 	void OnMouseDown(){
 		if(player.GetComponent<Player>().IsActive() && player.GetComponent<Player>().GetDiceMode()){

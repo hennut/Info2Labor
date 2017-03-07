@@ -9,7 +9,6 @@ public class Player : MonoBehaviour {
 	public bool isActive;
 	public bool diceMode;
 	public bool placeMode, placeMode6;
-	public bool needToHit;
 	public int diceValue = 0;
 	int diceIndex = 0;
 	
@@ -18,9 +17,16 @@ public class Player : MonoBehaviour {
 	public GameObject[] fields = new GameObject[40];
 	public GameObject[] bases = new GameObject[4];
 	public GameObject[] finishs = new GameObject[4];
+	
+	public GameObject[] debugDices = new GameObject[6];
+	
+	public bool won;
 
 	// Use this for initialization
 	void Start () {
+		for(int i = 0; i < debugDices.Length; i++){
+			debugDices[i].GetComponent<DebugDice>().diceValue = i + 1;
+		}
 		// ini the figures
 		for(int i = 0; i < figures.Length; i++){
 			figures[i].GetComponent<Figure>().pos = i;
@@ -74,7 +80,7 @@ public class Player : MonoBehaviour {
 					return 4;
 				}
 				return pos;
-			}else if((diceValue + pos) < (fields.Length + bases.Length + finishs.Length) && pos >= bases.Length && !FieldIsOccupied(pos + diceValue)){
+			}else if((diceValue + pos) < (fields.Length + bases.Length + finishs.Length) && pos >= bases.Length && !FieldIsOccupied(pos + diceValue, GetFigureByCoordinates(pos).GetComponent<Figure>().num)){
 				return pos + diceValue;
 			}else{
 				return pos;
@@ -90,9 +96,9 @@ public class Player : MonoBehaviour {
 	}
 	
 	// checks whether somebody stands on the field allready
-	public bool FieldIsOccupied(int pos){
+	public bool FieldIsOccupied(int pos, int num){
 		for(int i = 0; i < figures.Length; i++){
-			if(figures[i].GetComponent<Figure>().pos == pos){
+			if(figures[i].GetComponent<Figure>().pos == pos && figures[i].GetComponent<Figure>().num == num){
 				return true;
 			}
 		}
@@ -122,7 +128,7 @@ public class Player : MonoBehaviour {
 	// checks whether the base is full
 	public bool BaseIsFull(){
 		for(int i = 0; i < figures.Length; i++){
-			if(figures[i].GetComponent<Figure>().pos >= 4 || figures[i].GetComponent<Figure>().pos < 40){
+			if(figures[i].GetComponent<Figure>().pos >= 4 && figures[i].GetComponent<Figure>().pos < 40){
 				return false;
 			}
 		}
@@ -137,6 +143,19 @@ public class Player : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+	
+	void OnGUI() {
+		if(isActive){
+			System.String val = "";
+			if(diceValue != 0){
+				val = "Dice: " + diceValue;
+			}
+			GUI.Label(new Rect(260, 250, 500, 500), val + " | it's your turn, player " + (color + 1));
+		}
+		if(won){
+			GUI.Label(new Rect(260, 250, 500, 500), "Player " + (color + 1) + ", you have won!");
+		}
 	}
 	
 	// +++setter+++
@@ -183,7 +202,12 @@ public class Player : MonoBehaviour {
 
 	public void SetOn(){
 		isActive = true;
-		needToHit = false;
+		for(int i = 0; i < figures.Length; i++){
+			figures[i].GetComponent<Figure>().needToHit = false;
+		}
+		if(!transform.parent.GetComponent<GameMaster>().debugMode){
+			diceValue = 0;
+		}
 	}
 	
 	public void SetOff(){
@@ -218,9 +242,8 @@ public class Player : MonoBehaviour {
 				return figures[i];
 			}
 		}
+		return null;
 	}
-	
-	// +++++Debugging only++++++
 	
 	public int GetPosOfTargetedField(int num){
 		for(int i = 0; i < bases.Length; i++){
